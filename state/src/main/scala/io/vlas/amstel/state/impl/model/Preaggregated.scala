@@ -1,0 +1,38 @@
+package io.vlas.amstel.state.impl.model
+
+import io.vlas.amstel.core.model.Statistics
+
+private[state] object Preaggregated {
+
+  def apply(amount: Double): Preaggregated =
+    Preaggregated(sum = amount, max = amount, min = amount, count = 1)
+
+  def toStatistics(preaggregated: Preaggregated): Statistics =
+    Statistics(
+      sum = preaggregated.sum,
+      avg = if (preaggregated.count > 0) preaggregated.sum / preaggregated.count else 0,
+      max = preaggregated.max,
+      min = preaggregated.min,
+      count = preaggregated.count)
+}
+
+private[state] case class Preaggregated(sum: Double,
+                                        max: Double,
+                                        min: Double,
+                                        count: Long) {
+
+  def + (other: Preaggregated): Preaggregated =
+    Preaggregated(
+      sum = sum + other.sum,
+      max = Math.max(max, other.max),
+      min = Math.min(min, other.min),
+      count = count + other.count)
+
+  def + (amount: Double): Preaggregated =
+    Preaggregated(
+      sum = sum + amount,
+      max = Math.max(amount, max),
+      min = Math.min(amount, min),
+      count = count + 1)
+
+}
