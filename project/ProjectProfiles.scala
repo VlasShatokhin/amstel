@@ -59,7 +59,7 @@ object ProjectProfiles {
         "com.softwaremill.macwire" %% "macrosakka" % macwireVersion % Provided,
         "com.typesafe.akka" %% "akka-http-testkit" % akkaHttpVersion % Test
       ),
-      mainClass in assembly := Some("io.vlas.amstel.api.StatisticsApp")
+      mainClass in assembly := Some("io.vlas.amstel.api.EventsApp")
     )
 
   def stateProfile: Profile = _

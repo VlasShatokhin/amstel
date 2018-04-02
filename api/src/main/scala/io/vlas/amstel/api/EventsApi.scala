@@ -8,7 +8,7 @@ import io.vlas.amstel.core.Context
 import io.vlas.amstel.publisher.PublisherApi
 import io.vlas.amstel.statistics_reader.ReaderApi
 
-trait StatisticsApi extends ReaderApi with PublisherApi with SecuritySupport {
+trait EventsApi extends ReaderApi with PublisherApi with SecuritySupport {
   this: Context =>
 
   def userProvider: UserProvider

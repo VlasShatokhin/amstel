@@ -17,7 +17,7 @@ import io.vlas.amstel.state.{EventListener, StateService}
 
 import scala.util.{Failure, Success}
 
-object StatisticsApp extends App with StatisticsApi
+object EventsApp extends App with EventsApi
   with Context {
 
   val config = ConfigFactory.load("security.conf")
