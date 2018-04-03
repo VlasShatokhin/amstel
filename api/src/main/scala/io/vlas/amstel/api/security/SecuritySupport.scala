@@ -1,9 +1,11 @@
 package io.vlas.amstel.api.security
 
-import akka.http.scaladsl.server.Directive1
+import akka.http.scaladsl.model.headers.HttpChallenges.basic
+import akka.http.scaladsl.server.AuthenticationFailedRejection.CredentialsRejected
 import akka.http.scaladsl.server.Directives._
 import akka.http.scaladsl.server.directives.Credentials
 import akka.http.scaladsl.server.directives.Credentials.Provided
+import akka.http.scaladsl.server.{AuthenticationFailedRejection, Directive1}
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -19,17 +21,17 @@ trait SecuritySupport {
   def secureBasic(userProvider: UserProvider,
                   realm: String): Directive1[User.Id] =
     extractExecutionContext flatMap { ec =>
-      authenticate(fetchValidatedUser(userProvider, ec))
+      authenticate(fetchValidatedUser(userProvider, ec), realm)
     }
 
   /**
     * If the check fails the route is rejected.
     */
-  private def authenticate(authenticator: AsyncAuthenticator[User.Id]): Directive1[User.Id] =
+  private def authenticate(authenticator: AsyncAuthenticator[User.Id], realm: String): Directive1[User.Id] =
     extractCredentials flatMap { credentialsMaybe =>
       onSuccess(authenticator(Credentials(credentialsMaybe))) flatMap {
         case Some(user) => provide(user)
-        case None => reject
+        case None => reject(AuthenticationFailedRejection(CredentialsRejected, basic(realm)))
       }
     }
 
